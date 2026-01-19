@@ -13,5 +13,19 @@ pipeline {
                     branch: 'main'
             }
         }
+
+        stage('Maven Build') {
+            steps {
+                sh 'mvn -Dmaven.test.failure.ignore=true clean package'
+            }
+            post {
+                success {
+                    echo 'Maven Build Success'
+                }
+                failure {
+                    echo 'Maven Build Failed'
+                }
+            }
+        }
     }
 }
