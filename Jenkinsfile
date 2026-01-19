@@ -27,27 +27,24 @@ pipeline {
                 }
             }
         }
-pipeline{
-  stages{
-    stage('Docker Image Build') {
-      steps {
-        echo 'Docker image Build'
-        dir("${env.WORKSPACE}") {
-          sh """
-          docker build -t spring-petclinic:$BUILD_NUMBER .
-          docker tag spring-petclinic:$BUILD_NUMBER whwhdgus126-droid/spring-petclinic:latest
-          """
+
+        stage('Docker Image Build') {
+            steps {
+                echo 'Docker image Build'
+                dir("${env.WORKSPACE}") {
+                    sh """
+                    docker build -t spring-petclinic:${BUILD_NUMBER} .
+                    docker tag spring-petclinic:${BUILD_NUMBER} whwhdgus126-droid/spring-petclinic:latest
+                    """
+                }
+            }
         }
-      }
-    }
-        
-    stage('Docker Image Upload') {
+
+        stage('Docker Image Upload') {
             steps {
                 echo 'Docker Image Upload'
             }
         }
-
-           
-            }
+    }
 }
-        
+
