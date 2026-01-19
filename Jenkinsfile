@@ -27,34 +27,27 @@ pipeline {
                 }
             }
         }
-
-        stage('Docker Image Upload') {
+pipeline{
+  stages{
+    stage('Docker Image Build') {
+      steps {
+        echo 'Docker image Build'
+        dir("${env.WORKSPACE}") {
+          sh """
+          docker build -t spring-petclinic:$BUILD_NUMBER .
+          docker tag spring-petclinic:$BUILD_NUMBER whwhdgus126-droid/spring-petclinic:latest
+          """
+        }
+      }
+    }
+        
+    stage('Docker Image Upload') {
             steps {
                 echo 'Docker Image Upload'
             }
         }
 
-        stage('SSH Publish') {
-            steps {                    
-                sshPublisher(publishers: [sshPublisherDesc(configName: 'target', 
-                transfers: [sshTransfer(cleanRemote: false, excludes: '', 
-                execCommand: '''
-                fuser -k 8080/tcp
-                export BUILD_ID=Pipeline-PetClinic
-                nohup java -jar /home/ubuntu/spring-petclinic-4.0.0-SNAPSHOT.jar > nohup.out 2>&1 &''', 
-                execTimeout: 120000, 
-                flatten: false, 
-                makeEmptyDirs: false, 
-                noDefaultExcludes: false, 
-                patternSeparator: '[, ]+', 
-                remoteDirectory: '', 
-                remoteDirectorySDF: false, 
-                removePrefix: 'target', 
-                sourceFiles: 'target/*.jar')], 
-                usePromotionTimestamp: false, 
-                useWorkspaceInPromotion: false, 
-                verbose: false)])                    
+           
             }
-        }
-    }
 }
+        
